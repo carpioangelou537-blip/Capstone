@@ -289,7 +289,8 @@ a {
   gap: 14px;
 }
 
-.field input {
+.field input,
+.field select {
   border: 1.5px solid #e2dede;
   border-radius: 9px;
   padding: 11px 13px;
@@ -297,13 +298,35 @@ a {
   color: var(--black);
   background: var(--off-white);
   transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+  appearance: none;
 }
 
-.field input:focus {
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%235c0f1a'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+.field input:focus,
+.field select:focus {
   outline: none;
   border-color: var(--maroon);
   background: var(--white);
   box-shadow: 0 0 0 4px rgba(92, 15, 26, 0.12);
+}
+
+.notification-target-select {
+  color: var(--white);
+  background: var(--maroon);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.notification-target-select option {
+  background: var(--maroon);
+  color: var(--white);
 }
 
 .pw-wrap {

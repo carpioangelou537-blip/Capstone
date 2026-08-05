@@ -308,8 +308,10 @@ html, body, #root, .tracer-root {
 .dash {
   width: 100%;
   min-height: 100vh;
+  margin: 0;
   display: grid;
   grid-template-columns: minmax(200px, 260px) 1fr;
+  align-items: stretch;
   background: var(--off-white);
   opacity: 0;
   transform: translateY(10px);
@@ -324,7 +326,7 @@ html, body, #root, .tracer-root {
   color: var(--white);
   padding: 22px 10px 22px 0;
   display: flex; flex-direction: column; gap: 22px;
-  position: sticky; top: 0; height: 100vh;
+  position: sticky; top: 0; align-self: stretch; height: auto; min-height: 100vh;
 }
 
 .dash-crest { display: flex; align-items: center; gap: 12px; padding: 0 6px; }
@@ -363,10 +365,12 @@ html, body, #root, .tracer-root {
 
 .dash-main { padding: clamp(18px, 4vw, 32px) clamp(16px, 5vw, 40px) 60px clamp(10px, 2vw, 20px); max-width: 1180px; }
 
-.dash-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s var(--ease) both; }
+.dash-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s var(--ease) both; position: relative; }
 .dash-header h1 { font-family: var(--font-display); font-size: clamp(1.15rem, 3.4vw, 1.75rem); color: var(--black); margin-top: 4px; }
 .dash-header .eyebrow { color: var(--maroon); }
 .dash-header-actions { display: flex; align-items: center; gap: 12px; }
+
+.notif-wrap { position: relative; }
 
 .dash-profile-action {
   display: flex; align-items: center; gap: 8px; border: 1px solid rgba(92, 15, 26, 0.12); background: var(--white);
@@ -382,6 +386,46 @@ html, body, #root, .tracer-root {
   animation: ping 1.8s ease-out infinite;
 }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(201,162,75,0.6); } 70% { box-shadow: 0 0 0 8px rgba(201,162,75,0); } 100% { box-shadow: 0 0 0 0 rgba(201,162,75,0); } }
+
+/* Notification dropdown */
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(340px, 88vw);
+  max-height: 380px;
+  overflow-y: auto;
+  background: var(--maroon);
+  color: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 24px 50px -18px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08);
+  z-index: 120;
+  padding: 8px;
+  animation: dropIn 0.22s var(--ease) both;
+}
+@keyframes dropIn { from { opacity: 0; transform: translateY(-6px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.notif-dropdown-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px 10px; font-family: var(--font-mono); font-size: 0.68rem;
+  text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 6px;
+}
+.notif-item {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 10px 10px; border-radius: 9px; cursor: default;
+  transition: background 0.2s var(--ease);
+}
+.notif-item:hover { background: rgba(255,255,255,0.06); }
+.notif-item-text { font-size: 0.82rem; line-height: 1.4; color: rgba(255,255,255,0.92); }
+.notif-item-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.notif-item-date { font-size: 0.7rem; color: rgba(255,255,255,0.45); }
+.notif-goto {
+  border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: var(--white);
+  font-size: 0.72rem; font-weight: 600; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s var(--ease); flex-shrink: 0;
+}
+.notif-goto:hover { background: var(--gold); border-color: var(--gold); color: var(--maroon-deep); }
+.notif-empty { padding: 22px 10px; text-align: center; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
 
 .dash-avatar {
   width: 42px; height: 42px; border-radius: 50%; background: var(--maroon); color: var(--white);
@@ -559,7 +603,7 @@ html, body, #root, .tracer-root {
 
 @media (max-width: 860px) {
   .dash { grid-template-columns: 1fr; }
-  .dash-sidebar { position: sticky; top: 0; z-index: 50; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 16px; }
+  .dash-sidebar { position: sticky; top: 0; z-index: 50; height: auto; min-height: 0; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 16px; }
   .dash-nav { flex-direction: row; flex-wrap: wrap; overflow-y: visible; overflow-x: auto; flex: 1; }
   .dash-nav-item span.nav-label { display: none; }
   .dash-nav-item { padding: 10px; min-width: 42px; justify-content: center; }
@@ -577,6 +621,7 @@ html, body, #root, .tracer-root {
   .feature-grid { grid-template-columns: 1fr 1fr; }
   .dash-header { flex-direction: column; align-items: flex-start; }
   .dash-header-actions { width: 100%; justify-content: space-between; }
+  .notif-dropdown { position: fixed; top: 64px; left: 10px; right: 10px; width: auto; }
   .list-item { flex-direction: column; align-items: flex-start; }
   .bar-label { width: 90px; font-size: 0.72rem; }
 }
@@ -1084,17 +1129,34 @@ function SurveyResultsPanel({ alumni }) {
 
 function NotifyComposerPanel({ notifications, onSend }) {
   const [text, setText] = useState("");
+  const [target, setTarget] = useState("Complete the Alumni Survey");
+  const NOTIFICATION_TARGETS = [
+    "Complete the Alumni Survey",
+    "Career Tools",
+    "Job Alignment",
+    "Events & Activities",
+    "Register & Login",
+  ];
+
   function submit(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    onSend(text.trim());
+    onSend(text.trim(), target);
     setText("");
+    setTarget("Complete the Alumni Survey");
   }
   return (
     <div className="panel-block">
       <form className="panel-form" onSubmit={submit}>
         <label>Message to all alumni
           <textarea rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="Reminder: survey deadline is this Friday…" />
+        </label>
+        <label>Route the notification to
+          <select className="notification-target-select" value={target} onChange={(e) => setTarget(e.target.value)}>
+            {NOTIFICATION_TARGETS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
         </label>
         <button type="submit" className="btn-ghost" style={{ alignSelf: "flex-start" }}><Icon name="bell" size={14} /> Send notification</button>
       </form>
@@ -1307,7 +1369,7 @@ function SurveyFormPanel({ me, onSubmit }) {
         <label>Skills gained since graduating (comma separated)
           <input value={skillsText} onChange={(e) => setSkillsText(e.target.value)} placeholder="React, SQL, Project Management" />
         </label>
-        <button type="submit" className="btn-ghost" style={{ alignSelf: "flex-start" }}>Submit survey</button>
+        <button type="submit" className="btn-primary btn-block" style={{ maxWidth: 240 }}>Submit survey</button>
         {done && <span className="confirm-badge"><Icon name="check" size={13} /> Survey on file — this feeds AAO's analytics</span>}
       </form>
     </div>
@@ -1322,9 +1384,10 @@ function JobAlignmentPanel({ me, jobs }) {
     ...j,
     overlap: j.skills.filter((s) => me.skills.some((ms) => ms.toLowerCase() === s.toLowerCase())),
   }));
-  const totalSkillSlots = jobs.reduce((sum, j) => sum + j.skills.length, 0);
-  const matchedSlots = scored.reduce((sum, j) => sum + j.overlap.length, 0);
-  const pct = totalSkillSlots ? Math.round((matchedSlots / totalSkillSlots) * 100) : 0;
+  const uniqueMatchedSkills = [...new Set(me.skills.filter((skill) =>
+    scored.some((j) => j.skills.some((s) => s.toLowerCase() === skill.toLowerCase()))
+  ))];
+  const pct = me.skills.length ? Math.round((uniqueMatchedSkills.length / me.skills.length) * 100) : 0;
   const overlapping = scored.filter((j) => j.overlap.length > 0).sort((a, b) => b.overlap.length - a.overlap.length);
   const related = isJobRelatedToCourse(me.jobTitle);
 
@@ -1396,19 +1459,6 @@ function CareerToolsPanel({ me, jobs }) {
   );
 }
 
-function NotificationsListPanel({ notifications }) {
-  return (
-    <div className="panel-block list-block">
-      {notifications.length === 0 && <div className="empty-state">You're all caught up — nothing from the AAO yet.</div>}
-      {notifications.map((n) => (
-        <div className="list-item" key={n.id}>
-          <div className="list-item-main"><div className="list-item-title" style={{ fontWeight: 500 }}>{n.text}</div><div className="list-item-sub">{n.date}</div></div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function EventsAlumniPanel({ events, me, onRsvp }) {
   return (
     <div className="panel-block list-block">
@@ -1436,6 +1486,59 @@ function StaticInfoPanel({ text }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Notification dropdown — replaces the old full-panel notifications   */
+/*  view. Opens right under the bell button; each entry can jump the    */
+/*  alumnus straight to the feature it's about (same "go to" pattern    */
+/*  as before, just surfaced as a popover instead of a page).           */
+/* ------------------------------------------------------------------ */
+
+function NotificationDropdown({ notifications, onGoto, onClose }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) onClose();
+    }
+    function handleKey(e) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="notif-dropdown" ref={ref}>
+      <div className="notif-dropdown-head">
+        <span>Notifications</span>
+        <span>{notifications.length}</span>
+      </div>
+      {notifications.length === 0 && <div className="notif-empty">You're all caught up — nothing from the AAO yet.</div>}
+      {notifications.map((n) => (
+        <div className="notif-item" key={n.id}>
+          <div className="notif-item-text">{n.text}</div>
+          <div className="notif-item-meta">
+            <span className="notif-item-date">{n.date}</span>
+            {n.target && (
+              <button
+                type="button"
+                className="notif-goto"
+                onClick={() => { onGoto(n.target); onClose(); }}
+              >
+                Go to {n.target} <Icon name="arrow" size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Dashboard                                                           */
 /* ------------------------------------------------------------------ */
 
@@ -1449,6 +1552,7 @@ function Dashboard({ role, name, domain, onLogout }) {
 
   const [active, setActive] = useState(surveyLocked ? "Complete the Alumni Survey" : features[0].title);
   const [entered, setEntered] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setEntered(true), 60);
@@ -1464,6 +1568,11 @@ function Dashboard({ role, name, domain, onLogout }) {
   function handleSurveySubmit(data) {
     actions.submitSurvey(data);
     setActive(data.employed === "Employed" ? "Job Alignment" : "Career Tools");
+  }
+
+  function goToFeature(title) {
+    if (surveyLocked && title !== "Complete the Alumni Survey") return;
+    setActive(title);
   }
 
   const employedCount = alumni.filter((a) => a.employed === "Employed").length;
@@ -1496,7 +1605,6 @@ function Dashboard({ role, name, domain, onLogout }) {
       if (title === "Manage Event Posting") return totalRsvps;
     } else {
       if (title === "Job Alignment" || title === "Career Tools") return matchedJobs;
-      if (title === "Notifications") return notifications.length;
       if (title === "Events & Activities") return events.length;
       if (title === "Complete the Alumni Survey") return me.surveyCompleted ? "Done" : "Pending";
     }
@@ -1537,8 +1645,6 @@ function Dashboard({ role, name, domain, onLogout }) {
         return <JobAlignmentPanel me={me} jobs={jobs} />;
       case "Career Tools":
         return <CareerToolsPanel me={me} jobs={jobs} />;
-      case "Notifications":
-        return <NotificationsListPanel notifications={notifications} />;
       case "Events & Activities":
         return <EventsAlumniPanel events={events} me={me} onRsvp={actions.rsvpEvent} />;
       default:
@@ -1547,6 +1653,8 @@ function Dashboard({ role, name, domain, onLogout }) {
   }
 
   const activeFeature = features.find((f) => f.title === active);
+  // Notifications is no longer a page you navigate to — it lives entirely
+  // in the dropdown — so it never appears in the sidebar nav.
   const navFeatures = features.filter((f) => !(role === "alumni" && f.title === "Notifications"));
 
   return (
@@ -1593,16 +1701,24 @@ function Dashboard({ role, name, domain, onLogout }) {
           </div>
           <div className="dash-header-actions">
             {role === "alumni" && (
-              <button
-                className={`dash-profile-action ${active === "Notifications" ? "active" : ""}`}
-                onClick={() => { if (!surveyLocked) setActive("Notifications"); }}
-                disabled={surveyLocked}
-                style={{ position: "relative" }}
-              >
-                <Icon name="bell" size={18} />
-                <span>Notifications</span>
-                {notifications.length > 0 && <span className="ping-dot" />}
-              </button>
+              <div className="notif-wrap">
+                <button
+                  className={`dash-profile-action ${notifOpen ? "active" : ""}`}
+                  onClick={() => setNotifOpen((o) => !o)}
+                  style={{ position: "relative" }}
+                >
+                  <Icon name="bell" size={18} />
+                  <span>Notifications</span>
+                  {notifications.length > 0 && <span className="ping-dot" />}
+                </button>
+                {notifOpen && (
+                  <NotificationDropdown
+                    notifications={notifications}
+                    onGoto={goToFeature}
+                    onClose={() => setNotifOpen(false)}
+                  />
+                )}
+              </div>
             )}
             <div className="dash-avatar">
               {role === "alumni" && me.avatar ? <img src={me.avatar} alt="" /> : (name || me.name || "U").slice(0, 1).toUpperCase()}
@@ -1667,7 +1783,7 @@ const INITIAL_EVENTS = [
 ];
 
 const INITIAL_NOTIFICATIONS = [
-  { id: uid(), text: "Welcome to the Alumni Tracer System! Complete your survey to unlock job matches.", date: "2026-08-01" },
+  { id: uid(), text: "Welcome to the Alumni Tracer System! Complete your survey to unlock job matches.", date: "2026-08-01", target: "Complete the Alumni Survey" },
 ];
 
 export default function App() {
@@ -1735,8 +1851,8 @@ export default function App() {
       });
       addToast("RSVP updated.");
     },
-    sendNotification(text) {
-      setNotifications((list) => [{ id: uid(), text, date: new Date().toISOString().slice(0, 10) }, ...list]);
+    sendNotification(text, target = "Notifications") {
+      setNotifications((list) => [{ id: uid(), text, date: new Date().toISOString().slice(0, 10), target }, ...list]);
       addToast("Notification sent to all alumni.");
     },
   };
