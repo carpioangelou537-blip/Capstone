@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 /* ================================================================== */
-/*  Styles — same maroon/black academic identity, more motion + fluid   */
-/*  responsiveness baked in throughout.                                */
+/*  Styles                                                              */
 /* ================================================================== */
 
 const STYLES = `
@@ -60,7 +59,27 @@ html, body, #root, .tracer-root {
 }
 
 /* ---------------------------------------------------------------- */
-/*  Auth shell                                                        */
+/*  Splash / loading screen                                            */
+/* ---------------------------------------------------------------- */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--maroon);
+  animation: fadeIn 0.25s var(--ease) both;
+}
+.splash-logo-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.splash-loading-text {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7); animation: fadeUp 0.6s var(--ease) both; animation-delay: 0.15s;
+}
+
+/* ---------------------------------------------------------------- */
+/*  Auth shell — plain, no decoration                                  */
 /* ---------------------------------------------------------------- */
 
 .auth-page {
@@ -70,84 +89,18 @@ html, body, #root, .tracer-root {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(20px, 4vw, 34px);
+  gap: clamp(20px, 4vw, 30px);
   padding: clamp(28px, 6vw, 48px) clamp(14px, 4vw, 20px) clamp(40px, 8vw, 64px);
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(139, 30, 63, 0.55), transparent 55%),
-    radial-gradient(circle at 85% 90%, rgba(139, 30, 63, 0.4), transparent 50%),
-    linear-gradient(160deg, var(--maroon) 0%, var(--maroon-deep) 55%, var(--black) 100%);
-  background-size: 220% 220%;
-  animation: bgShift 18s ease-in-out infinite;
+  background: var(--maroon);
 }
 
-@keyframes bgShift {
-  0%, 100% { background-position: 0% 0%; }
-  50% { background-position: 60% 40%; }
-}
-
-.auth-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-
-.orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; animation: drift 16s ease-in-out infinite; }
-.orb-a { width: 360px; height: 360px; background: var(--maroon-bright); top: -80px; left: -100px; }
-.orb-b { width: 300px; height: 300px; background: var(--black); bottom: -100px; right: -80px; animation-delay: -8s; }
-.orb-c { width: 220px; height: 220px; background: var(--gold); top: 30%; right: 6%; opacity: 0.12; animation-delay: -4s; animation-duration: 22s; }
-
-@keyframes drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, 30px) scale(1.08); }
-}
-
-.auth-tracer { position: absolute; bottom: 6%; left: 0; width: 100%; height: 90px; opacity: 0.5; }
-
-.auth-brand {
-  position: relative;
+.auth-logo-wrap {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  max-width: 620px;
-  width: 100%;
-  text-align: left;
-  animation: fadeUp 0.7s var(--ease) both;
+  gap: 10px;
+  animation: fadeUp 0.5s var(--ease) both;
 }
-
-.crest {
-  flex-shrink: 0;
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--white);
-  color: var(--maroon-deep);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.03em;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
-  overflow: hidden; padding: 0;
-  animation: crestPulse 3.4s ease-in-out infinite;
-}
-
-@keyframes crestPulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.18); }
-  50% { box-shadow: 0 0 0 8px rgba(255,255,255,0.08); }
-}
-
-.crest-logo { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.brand-text h1 {
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 4vw, 1.9rem);
-  color: var(--white);
-  margin: 4px 0 6px;
-  line-height: 1.18;
-}
-
-.eyebrow {
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.brand-sub { color: rgba(255, 255, 255, 0.65); font-size: clamp(0.8rem, 2vw, 0.9rem); }
 
 .auth-card-wrap { position: relative; width: 100%; display: flex; justify-content: center; }
 
@@ -168,9 +121,9 @@ html, body, #root, .tracer-root {
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+@keyframes bgShift { 0%, 100% { background-position: 0% 0%; } 50% { background-position: 60% 40%; } }
 
-.auth-card h2 { font-family: var(--font-display); font-size: clamp(1.3rem, 4vw, 1.6rem); margin: 6px 0 2px; }
-.card-sub { color: #5a5a5a; font-size: 0.88rem; margin: 0 0 22px; }
+.auth-card h2 { font-family: var(--font-display); font-size: clamp(1.3rem, 4vw, 1.6rem); margin: 6px 0 18px; }
 
 .role-toggle { display: flex; background: var(--off-white); border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 22px; }
 .role-tab {
@@ -241,6 +194,24 @@ html, body, #root, .tracer-root {
 }
 .btn-ghost:hover { background: rgba(92,15,26,0.06); border-color: var(--maroon); transform: translateY(-1px); }
 
+/* Inside the dark maroon detail panel, the default maroon-on-transparent
+   styling above is unreadable — flip to a light variant there. Covers
+   Save profile, Upload/Change photo, Send notification, Add alumnus,
+   Publish posting, and Post event, since they all live in this panel. */
+.detail-panel .btn-ghost {
+  border-color: rgba(255,255,255,0.35);
+  color: var(--white);
+  background: rgba(255,255,255,0.08);
+}
+.detail-panel .btn-ghost:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.65);
+  transform: translateY(-1px);
+}
+.detail-panel .btn-ghost:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 2px;
+}
+
 .btn-danger {
   border: none; background: transparent; color: #a33; cursor: pointer; padding: 6px 8px; border-radius: 7px;
   transition: background 0.2s var(--ease), transform 0.2s var(--ease);
@@ -251,25 +222,33 @@ html, body, #root, .tracer-root {
 .switch-line { text-align: center; font-size: 0.86rem; color: #5a5a5a; margin: 20px 0 0; }
 
 /* ---------------------------------------------------------------- */
-/*  Tracer signature element                                          */
+/*  Crest / logo                                                       */
 /* ---------------------------------------------------------------- */
 
-.tracer-svg { width: 100%; height: 100%; display: block; }
-.tracer-path {
-  stroke: var(--white); stroke-width: 2; stroke-linecap: round;
-  stroke-dasharray: 900; stroke-dashoffset: 900;
-  animation: draw 3.2s var(--ease) forwards, glow 2.4s ease-in-out infinite 3.2s;
+.crest {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--maroon-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.03em;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+  overflow: hidden; padding: 0;
+  animation: crestPulse 3.4s ease-in-out infinite;
 }
-.dash-tracer .tracer-path { stroke: var(--maroon); stroke-width: 2.5; }
-.tracer-node { fill: var(--white); opacity: 0; animation: nodeIn 0.4s var(--ease) forwards; }
-.dash-tracer .tracer-node { fill: var(--maroon-bright); }
-.tracer-node.n1 { animation-delay: 0.6s; }
-.tracer-node.n2 { animation-delay: 1.8s; }
-.tracer-node.n3 { animation-delay: 3s; }
+.crest.small { width: 40px; height: 40px; font-size: 0.75rem; animation: none; }
+.crest.xl { width: 112px; height: 112px; font-size: 1.7rem; box-shadow: 0 0 0 6px rgba(255,255,255,0.18); }
 
-@keyframes draw { to { stroke-dashoffset: 0; } }
-@keyframes glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-@keyframes nodeIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+@keyframes crestPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.18); }
+  50% { box-shadow: 0 0 0 8px rgba(255,255,255,0.08); }
+}
+.crest.xl {
+  animation: crestPulse 2.2s ease-in-out infinite;
+}
+
+.crest-logo { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ---------------------------------------------------------------- */
 /*  Toasts                                                             */
@@ -302,6 +281,37 @@ html, body, #root, .tracer-root {
 }
 
 /* ---------------------------------------------------------------- */
+/*  Modal (first-time survey)                                          */
+/* ---------------------------------------------------------------- */
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(11, 10, 10, 0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s var(--ease) both;
+}
+.modal-card {
+  width: 100%; max-width: 540px; max-height: 88vh; overflow-y: auto;
+  background: linear-gradient(165deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+  color: var(--white); border-radius: var(--radius);
+  padding: clamp(20px, 5vw, 30px);
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.6);
+  animation: cardIn 0.4s var(--ease) both;
+  position: relative;
+}
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.modal-head h3 { font-family: var(--font-display); font-size: clamp(1.1rem, 3vw, 1.3rem); margin: 0; }
+.modal-close {
+  border: none; background: rgba(255,255,255,0.08); color: var(--white); width: 32px; height: 32px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+  transition: background 0.2s var(--ease);
+}
+.modal-close:hover { background: rgba(255,255,255,0.18); }
+.modal-sub { font-size: 0.85rem; color: rgba(255,255,255,0.72); margin: 0 0 18px; line-height: 1.5; }
+
+/* ---------------------------------------------------------------- */
 /*  Dashboard layout                                                  */
 /* ---------------------------------------------------------------- */
 
@@ -330,7 +340,6 @@ html, body, #root, .tracer-root {
 }
 
 .dash-crest { display: flex; align-items: center; gap: 12px; padding: 0 6px; }
-.crest.small { width: 40px; height: 40px; font-size: 0.75rem; animation: none; }
 .dash-brand { font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
 .dash-role { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.65); margin-top: 2px; }
 
@@ -369,6 +378,14 @@ html, body, #root, .tracer-root {
 .dash-header h1 { font-family: var(--font-display); font-size: clamp(1.15rem, 3.4vw, 1.75rem); color: var(--black); margin-top: 4px; }
 .dash-header .eyebrow { color: var(--maroon); }
 .dash-header-actions { display: flex; align-items: center; gap: 12px; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.75);
+}
 
 .notif-wrap { position: relative; }
 
@@ -469,7 +486,7 @@ html, body, #root, .tracer-root {
 .stat-value { font-family: var(--font-mono); font-size: clamp(1.25rem, 3vw, 1.7rem); font-weight: 500; color: var(--maroon-deep); }
 .stat-label { font-size: 0.78rem; color: #6b6b6b; margin-top: 4px; }
 
-/* Feature grid (cards linking every module together) */
+/* Feature grid */
 .feature-section { margin-bottom: 8px; }
 .feature-section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 6px; }
 .feature-section h2 { font-family: var(--font-display); font-size: clamp(1.05rem, 2.6vw, 1.2rem); color: var(--black); }
@@ -537,6 +554,8 @@ html, body, #root, .tracer-root {
   outline: none; border-color: var(--gold); background: rgba(255,255,255,0.1);
 }
 .panel-form select option { color: black; }
+.notification-target-select { color: var(--white); background: var(--maroon); border-color: rgba(255, 255, 255, 0.22); }
+.notification-target-select option { background: var(--maroon); color: var(--white); }
 
 .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 420px; }
@@ -587,7 +606,6 @@ html, body, #root, .tracer-root {
 
 .empty-state { text-align: center; padding: 24px 10px; color: rgba(255,255,255,0.5); font-size: 0.84rem; }
 
-.progress-ring-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
 .confirm-badge {
   display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; color: #8fe0a6;
   background: rgba(120,200,140,0.14); padding: 6px 12px; border-radius: 999px; animation: popIn 0.3s var(--ease) both;
@@ -614,7 +632,6 @@ html, body, #root, .tracer-root {
 }
 
 @media (max-width: 640px) {
-  .auth-brand { flex-direction: column; text-align: center; gap: 10px; }
   .field-pair { grid-template-columns: 1fr; }
   .auth-card { padding: 26px 20px 22px; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -639,13 +656,14 @@ html, body, #root, .tracer-root {
   .bar-label { width: 76px; font-size: 0.68rem; }
   .lock-banner { font-size: 0.8rem; align-items: flex-start; }
   .table-wrap { margin: 0 -2px; }
+  .crest.xl { width: 84px; height: 84px; font-size: 1.3rem; }
+  .modal-card { padding: 20px 18px; }
 }
 
 @media (max-width: 420px) {
   .stat-grid { grid-template-columns: 1fr; }
   .feature-grid { grid-template-columns: 1fr; }
   .dash-crest { flex: 1 1 100%; }
-  .auth-page { padding: 24px 14px 40px; }
   .role-toggle { flex-wrap: wrap; }
   .field-row { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
@@ -679,6 +697,7 @@ const ICONS = {
   check: "M4 10.5 8 14.5 16 5.5",
   x: "M5 5l10 10M15 5 5 15",
   camera: "M6 4l1-1.5h6L14 4h3v11H3V4h3Zm4 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z",
+  briefcase: "M7 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h4v3H3V4h4Zm-1 0h8V3H6v1ZM3 8h16v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Z",
 };
 
 function Icon({ name, size = 20 }) {
@@ -709,9 +728,7 @@ function TracerLine({ className = "" }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Feature registry — text only; the actual functionality lives in    */
-/*  renderPanel() below, which reads/writes the shared domain state    */
-/*  so every feature can affect every other feature.                   */
+/*  Feature registry                                                   */
 /* ------------------------------------------------------------------ */
 
 const ADMIN_FEATURES = [
@@ -725,13 +742,8 @@ const ADMIN_FEATURES = [
   { icon: "calendar", title: "Manage Event Posting", text: "Set up and announce alumni events, then track attendee responses through the Events Response System." },
 ];
 
-// Both career features are always available to every alumnus — Job
-// Alignment shows fit against their current role, Career Tools surfaces
-// openings worth pursuing. Which one an alumnus lands on first after the
-// survey is decided by their employment status, not by hiding the other.
 function getAlumniFeatures() {
   return [
-    { icon: "key", title: "Register & Login", text: "Create an account and sign in securely from any device once your details are verified against your stored record." },
     { icon: "id", title: "Manage Alumni Profile", text: "Upload a profile photo and edit the personal details on your profile whenever your information changes." },
     { icon: "doc", title: "Complete the Alumni Survey", text: "Share your employment status and current skill set so it can be matched against the job bank and your field of study." },
     { icon: "chart", title: "Job Alignment", text: "See how closely your current skills line up with what employers are hiring for right now." },
@@ -751,11 +763,12 @@ const PROGRAM_OPTIONS = [
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: CURRENT_YEAR - 1990 + 1 }, (_, i) => String(CURRENT_YEAR - i));
 
-const EMPLOYMENT_OPTIONS = ["Employed", "Unemployed"];
+const EMPLOYMENT_OPTIONS = ["Employed", "Self Employed", "Unemployed"];
 
-// Rough keyword check used to flag whether a reported job title looks
-// related to an IT/CS-family course. Not a hiring judgment — just a quick
-// signal surfaced back to the alumnus and the AAO.
+function isEmployedStatus(status) {
+  return status === "Employed" || status === "Self Employed";
+}
+
 const COURSE_KEYWORDS = [
   "developer", "programmer", "software", "web", "app", "application", "system", "systems",
   "network", "networking", "information technology", "database", "data", "cyber", "security",
@@ -770,9 +783,6 @@ function isJobRelatedToCourse(jobTitle) {
   return COURSE_KEYWORDS.some((k) => t.includes(k));
 }
 
-// Skills requested across open postings that the alumnus hasn't reported
-// having, ranked by how many postings ask for them — used to recommend
-// what to learn next in both Job Alignment and Career Tools.
 function getSkillGaps(me, jobs) {
   const demand = {};
   jobs.forEach((j) => j.skills.forEach((s) => {
@@ -853,30 +863,34 @@ function ToastStack({ toasts }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Auth shell + pages                                                  */
+/*  Splash / loading screen                                            */
+/* ------------------------------------------------------------------ */
+
+function SplashScreen() {
+  return (
+    <div className="splash-screen">
+      <div className="splash-logo-wrap">
+        <div className="crest xl">
+          <BrandLogo />
+        </div>
+        <p className="splash-loading-text">Loading…</p>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Auth shell + pages — plain, logo only, no decorative copy           */
 /* ------------------------------------------------------------------ */
 
 function AuthShell({ children }) {
   return (
     <div className="auth-page">
-      <div className="auth-bg">
-        <span className="orb orb-a" />
-        <span className="orb orb-b" />
-        <span className="orb orb-c" />
-        <TracerLine className="auth-tracer" />
-      </div>
-
-      <div className="auth-brand">
-        <div className="crest">
+      <div className="auth-logo-wrap">
+        <div className="crest xl">
           <BrandLogo />
         </div>
-        <div className="brand-text">
-          <p className="eyebrow">St. Peter&rsquo;s College &mdash; IT / CS Programs</p>
-          <h1>Alumni Tracer &amp; Job&ndash;Course Alignment Analytics</h1>
-          <p className="brand-sub">Following every graduate from the tassel-turn to the job title.</p>
-        </div>
       </div>
-
       <div className="auth-card-wrap">{children}</div>
     </div>
   );
@@ -895,8 +909,7 @@ function LoginPage({ role, setRole, onSubmit, goSignup }) {
           ))}
         </div>
 
-        <h2>Welcome back</h2>
-        <p className="card-sub">Sign in to continue as {role === "alumni" ? "an alumnus" : "an AAO administrator"}.</p>
+        <h2>Login</h2>
 
         <form onSubmit={onSubmit} className="auth-form">
           <label className="field">
@@ -952,8 +965,7 @@ function SignupPage({ role, setRole, onSubmit, goLogin }) {
           ))}
         </div>
 
-        <h2>Create your account</h2>
-        <p className="card-sub">Register as {role === "alumni" ? "a graduate of the IT / CS program" : "Alumni Affairs Office staff"}.</p>
+        <h2>Sign Up</h2>
 
         <form onSubmit={submit} className="auth-form">
           <div className="field-pair">
@@ -997,14 +1009,13 @@ function SignupPage({ role, setRole, onSubmit, goLogin }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Panel content — this is where every feature reads/writes the same  */
-/*  shared state, so admin actions show up for alumni and vice versa.  */
+/*  Panel content                                                      */
 /* ------------------------------------------------------------------ */
 
 function StatusPill({ status }) {
   if (status === true) return <span className="pill ok"><Icon name="check" size={11} /> Surveyed</span>;
   if (status === false) return <span className="pill pending">Pending</span>;
-  if (status === "Employed") return <span className="pill ok"><Icon name="check" size={11} /> Employed</span>;
+  if (status === "Employed" || status === "Self Employed") return <span className="pill ok"><Icon name="check" size={11} /> {status}</span>;
   if (status === "Unemployed") return <span className="pill pending">Unemployed</span>;
   return <span className="pill muted">{status}</span>;
 }
@@ -1079,7 +1090,18 @@ function AlumniInfoPanel({ alumni }) {
           </div>
           {openId === a.id && (
             <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-              {a.jobTitle && <div className="list-item-sub" style={{ marginBottom: 8 }}>Current role: {a.jobTitle}</div>}
+              {a.employed === "Employed" && (a.jobTitle || a.companyName || a.years) && (
+                <div className="list-item-sub" style={{ marginBottom: 8 }}>
+                  {a.jobTitle && <>Current role: {a.jobTitle}</>}
+                  {a.companyName && <> at {a.companyName}</>}
+                  {a.years && <> · {a.years} yr{a.years === "1" ? "" : "s"}</>}
+                </div>
+              )}
+              {a.employed === "Self Employed" && (a.businessName || a.years) && (
+                <div className="list-item-sub" style={{ marginBottom: 8 }}>
+                  Self-employed{a.businessName && <> · {a.businessName}</>}{a.years && <> · {a.years} yr{a.years === "1" ? "" : "s"}</>}
+                </div>
+              )}
               <div className="list-item-sub" style={{ marginBottom: 6 }}>Self-reported skills</div>
               <div className="chip-row">
                 {a.skills.length ? a.skills.map((s) => <span className="chip" key={s}>{s}</span>) : <span className="list-item-sub">No skills submitted yet.</span>}
@@ -1095,7 +1117,7 @@ function AlumniInfoPanel({ alumni }) {
 function SurveyResultsPanel({ alumni }) {
   const total = alumni.length;
   const completed = alumni.filter((a) => a.surveyCompleted).length;
-  const employed = alumni.filter((a) => a.employed === "Employed").length;
+  const employed = alumni.filter((a) => isEmployedStatus(a.employed)).length;
   const pct = total ? Math.round((completed / total) * 100) : 0;
   const empPct = total ? Math.round((employed / total) * 100) : 0;
 
@@ -1135,7 +1157,7 @@ function NotifyComposerPanel({ notifications, onSend }) {
     "Career Tools",
     "Job Alignment",
     "Events & Activities",
-    "Register & Login",
+    "Manage Alumni Profile",
   ];
 
   function submit(e) {
@@ -1178,7 +1200,7 @@ function AnalyticsPanel({ alumni, jobs }) {
   jobs.forEach((j) => j.skills.forEach((s) => { demand[s] = (demand[s] || 0) + 1; }));
   const skillList = Object.keys(freq).sort((a, b) => freq[b] - freq[a]).slice(0, 6);
   const maxFreq = Math.max(1, ...skillList.map((s) => freq[s]));
-  const employedCount = alumni.filter((a) => a.employed === "Employed").length;
+  const employedCount = alumni.filter((a) => isEmployedStatus(a.employed)).length;
   const unemployedCount = alumni.filter((a) => a.employed === "Unemployed").length;
 
   return (
@@ -1336,9 +1358,13 @@ function ProfilePanel({ me, onSave }) {
   );
 }
 
-function SurveyFormPanel({ me, onSubmit }) {
+/* Shared survey form — used inline in the panel AND inside the first-time modal */
+function SurveyFormPanel({ me, onSubmit, submitLabel = "Submit survey" }) {
   const [employed, setEmployed] = useState(EMPLOYMENT_OPTIONS.includes(me.employed) ? me.employed : "Unemployed");
   const [jobTitle, setJobTitle] = useState(me.jobTitle || "");
+  const [companyName, setCompanyName] = useState(me.companyName || "");
+  const [businessName, setBusinessName] = useState(me.businessName || "");
+  const [years, setYears] = useState(me.years || "");
   const [skillsText, setSkillsText] = useState(me.skills.join(", "));
   const [done, setDone] = useState(me.surveyCompleted);
 
@@ -1348,6 +1374,9 @@ function SurveyFormPanel({ me, onSubmit }) {
     onSubmit({
       employed,
       jobTitle: employed === "Employed" ? jobTitle.trim() : "",
+      companyName: employed === "Employed" ? companyName.trim() : "",
+      businessName: employed === "Self Employed" ? businessName.trim() : "",
+      years: employed === "Employed" || employed === "Self Employed" ? years.trim() : "",
       skills,
     });
     setDone(true);
@@ -1361,24 +1390,62 @@ function SurveyFormPanel({ me, onSubmit }) {
             {EMPLOYMENT_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
           </select>
         </label>
+
         {employed === "Employed" && (
-          <label>Current job title
-            <input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Junior Web Developer" required />
-          </label>
+          <>
+            <label>Current job title
+              <input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Junior Web Developer" required />
+            </label>
+            <div className="row">
+              <label>Company name
+                <input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Iligan Digital Solutions" required />
+              </label>
+              <label>Years employed
+                <input value={years} onChange={(e) => setYears(e.target.value)} type="number" min="0" step="0.5" placeholder="e.g. 2" required />
+              </label>
+            </div>
+          </>
         )}
+
+        {employed === "Self Employed" && (
+          <div className="row">
+            <label>Business name
+              <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="e.g. Reyes Web Studio" required />
+            </label>
+            <label>Years in business
+              <input value={years} onChange={(e) => setYears(e.target.value)} type="number" min="0" step="0.5" placeholder="e.g. 3" required />
+            </label>
+          </div>
+        )}
+
         <label>Skills gained since graduating (comma separated)
           <input value={skillsText} onChange={(e) => setSkillsText(e.target.value)} placeholder="React, SQL, Project Management" />
         </label>
-        <button type="submit" className="btn-primary btn-block" style={{ maxWidth: 240 }}>Submit survey</button>
+        <button type="submit" className="btn-primary btn-block" style={{ maxWidth: 240 }}>{submitLabel}</button>
         {done && <span className="confirm-badge"><Icon name="check" size={13} /> Survey on file — this feeds AAO's analytics</span>}
       </form>
     </div>
   );
 }
 
-// Employed alumni: shows how well their existing skills line up with what's
-// currently being asked for across every posting (a fit score), rather than
-// a list to apply to.
+/* First-time-only survey modal, blurred backdrop */
+function SurveyModal({ me, onSubmit, onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <div className="modal-head">
+          <h3>Complete Your Alumni Info</h3>
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
+            <Icon name="x" size={16} />
+          </button>
+        </div>
+        <p className="modal-sub">A few quick details so we can match you with relevant openings and analytics. You can always update this later from "Complete the Alumni Survey" in the sidebar.</p>
+        <SurveyFormPanel me={me} onSubmit={onSubmit} submitLabel="Save & continue" />
+      </div>
+    </div>
+  );
+}
+
 function JobAlignmentPanel({ me, jobs }) {
   const scored = jobs.map((j) => ({
     ...j,
@@ -1389,15 +1456,18 @@ function JobAlignmentPanel({ me, jobs }) {
   ))];
   const pct = me.skills.length ? Math.round((uniqueMatchedSkills.length / me.skills.length) * 100) : 0;
   const overlapping = scored.filter((j) => j.overlap.length > 0).sort((a, b) => b.overlap.length - a.overlap.length);
-  const related = isJobRelatedToCourse(me.jobTitle);
+  const related = me.employed === "Employed" ? isJobRelatedToCourse(me.jobTitle) : null;
 
   return (
     <div className="panel-block">
-      {me.jobTitle && (
+      {(me.jobTitle || me.businessName) && (
         <div className="list-item" style={{ marginBottom: 16 }}>
           <div className="list-item-main">
-            <div className="list-item-title">{me.jobTitle}</div>
-            <div className="list-item-sub">Reported role · {me.program}</div>
+            <div className="list-item-title">{me.employed === "Self Employed" ? me.businessName : me.jobTitle}</div>
+            <div className="list-item-sub">
+              {me.employed === "Self Employed" ? "Self-employed" : `Reported role${me.companyName ? ` at ${me.companyName}` : ""}`} · {me.program}
+              {me.years && <> · {me.years} yr{me.years === "1" ? "" : "s"}</>}
+            </div>
           </div>
           {related === true && <span className="pill ok"><Icon name="check" size={11} /> Related to your course</span>}
           {related === false && <span className="pill muted">Outside your course field</span>}
@@ -1430,6 +1500,7 @@ function JobAlignmentPanel({ me, jobs }) {
     </div>
   );
 }
+
 function CareerToolsPanel({ me, jobs }) {
   const scored = jobs
     .map((j) => ({ ...j, overlap: j.skills.filter((s) => me.skills.some((ms) => ms.toLowerCase() === s.toLowerCase())) }))
@@ -1486,10 +1557,7 @@ function StaticInfoPanel({ text }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Notification dropdown — replaces the old full-panel notifications   */
-/*  view. Opens right under the bell button; each entry can jump the    */
-/*  alumnus straight to the feature it's about (same "go to" pattern    */
-/*  as before, just surfaced as a popover instead of a page).           */
+/*  Notification dropdown                                              */
 /* ------------------------------------------------------------------ */
 
 function NotificationDropdown({ notifications, onGoto, onClose }) {
@@ -1542,40 +1610,51 @@ function NotificationDropdown({ notifications, onGoto, onClose }) {
 /*  Dashboard                                                           */
 /* ------------------------------------------------------------------ */
 
-function Dashboard({ role, name, domain, onLogout }) {
+function Dashboard({ role, name, domain, onLogout, firstTime, onFirstTimeHandled }) {
   const { alumni, jobs, events, notifications, actions } = domain;
   const me = alumni.find((a) => a.isSelf) || alumni[0];
   const features = role === "admin" ? ADMIN_FEATURES : getAlumniFeatures(me.employed);
 
-  // Alumni must complete their survey before anything else unlocks.
-  const surveyLocked = role === "alumni" && !me.surveyCompleted;
-
-  const [active, setActive] = useState(surveyLocked ? "Complete the Alumni Survey" : features[0].title);
+  const [active, setActive] = useState(features[0].title);
   const [entered, setEntered] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [surveyModalOpen, setSurveyModalOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setEntered(true), 60);
     return () => clearTimeout(t);
   }, []);
 
+  // Only ever opens right after a fresh sign-up. Logging in later never
+  // triggers it, and no other feature is restricted while it's pending.
   useEffect(() => {
-    if (surveyLocked) setActive("Complete the Alumni Survey");
-  }, [surveyLocked]);
+    if (firstTime && role === "alumni" && !me.surveyCompleted) {
+      setSurveyModalOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Submitting the survey unlocks the dashboard and immediately routes the
-  // alumnus to the feature that matches their new employment status.
   function handleSurveySubmit(data) {
     actions.submitSurvey(data);
-    setActive(data.employed === "Employed" ? "Job Alignment" : "Career Tools");
+    setActive(data.employed === "Unemployed" ? "Career Tools" : "Job Alignment");
+  }
+
+  function handleModalSubmit(data) {
+    handleSurveySubmit(data);
+    setSurveyModalOpen(false);
+    if (onFirstTimeHandled) onFirstTimeHandled();
+  }
+
+  function handleModalClose() {
+    setSurveyModalOpen(false);
+    if (onFirstTimeHandled) onFirstTimeHandled();
   }
 
   function goToFeature(title) {
-    if (surveyLocked && title !== "Complete the Alumni Survey") return;
     setActive(title);
   }
 
-  const employedCount = alumni.filter((a) => a.employed === "Employed").length;
+  const employedCount = alumni.filter((a) => isEmployedStatus(a.employed)).length;
   const surveyedCount = alumni.filter((a) => a.surveyCompleted).length;
   const totalRsvps = events.reduce((sum, e) => sum + e.rsvps.length, 0);
   const matchedJobs = jobs.filter((j) => j.skills.some((s) => me.skills.some((ms) => ms.toLowerCase() === s.toLowerCase()))).length;
@@ -1635,8 +1714,6 @@ function Dashboard({ role, name, domain, onLogout }) {
       }
     }
     switch (title) {
-      case "Register & Login":
-        return <StaticInfoPanel text="Your account details are verified against your stored alumni record every time you sign in from a new device." />;
       case "Manage Alumni Profile":
         return <ProfilePanel me={me} onSave={actions.updateSelf} />;
       case "Complete the Alumni Survey":
@@ -1653,12 +1730,14 @@ function Dashboard({ role, name, domain, onLogout }) {
   }
 
   const activeFeature = features.find((f) => f.title === active);
-  // Notifications is no longer a page you navigate to — it lives entirely
-  // in the dropdown — so it never appears in the sidebar nav.
   const navFeatures = features.filter((f) => !(role === "alumni" && f.title === "Notifications"));
 
   return (
     <div className={`dash ${entered ? "in" : ""}`}>
+      {surveyModalOpen && (
+        <SurveyModal me={me} onSubmit={handleModalSubmit} onClose={handleModalClose} />
+      )}
+
       <aside className="dash-sidebar">
         <div className="dash-crest">
           <div className="crest small">
@@ -1673,16 +1752,14 @@ function Dashboard({ role, name, domain, onLogout }) {
         <nav className="dash-nav">
           {navFeatures.map((f, i) => {
             const badge = getBadge(f.title);
-            const locked = surveyLocked && f.title !== "Complete the Alumni Survey";
             return (
               <button
                 key={f.title}
                 className={`dash-nav-item ${active === f.title ? "active" : ""}`}
                 style={{ "--i": i }}
-                disabled={locked}
-                onClick={() => { if (!locked) setActive(f.title); }}
+                onClick={() => setActive(f.title)}
               >
-                <Icon name={locked ? "key" : f.icon} size={18} />
+                <Icon name={f.icon} size={18} />
                 <span className="nav-label">{f.title}</span>
                 {badge !== null && badge !== undefined && badge !== 0 && <span className="nav-badge">{badge}</span>}
               </button>
@@ -1696,7 +1773,7 @@ function Dashboard({ role, name, domain, onLogout }) {
       <main className="dash-main">
         <header className="dash-header">
           <div>
-            <p className="eyebrow">Good day, {name || me.name || (role === "admin" ? "Administrator" : "Alumnus")}</p>
+            <p className="eyebrow" style={{ color: "var(--maroon)" }}>Good day, {name || me.name || (role === "admin" ? "Administrator" : "Alumnus")}</p>
             <h1>{role === "admin" ? "Alumni Affairs Office Dashboard" : "My Alumni Dashboard"}</h1>
           </div>
           <div className="dash-header-actions">
@@ -1728,13 +1805,6 @@ function Dashboard({ role, name, domain, onLogout }) {
 
         <TracerLine className="dash-tracer" />
 
-        {surveyLocked && (
-          <div className="lock-banner">
-            <Icon name="doc" size={16} />
-            <span>Complete your alumni survey to unlock your profile, career tools, notifications, and events.</span>
-          </div>
-        )}
-
         <section className="stat-grid">
           {STATS[role].map((s, i) => (
             <div className="stat-card" style={{ "--i": i }} key={s.label}>
@@ -1760,15 +1830,15 @@ function Dashboard({ role, name, domain, onLogout }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Root app — owns the shared domain state that links every feature   */
+/*  Root app                                                            */
 /* ------------------------------------------------------------------ */
 
 const INITIAL_ALUMNI = [
-  { id: "self", name: "You", isSelf: true, program: "BS Computer Science", gradYear: String(CURRENT_YEAR), employed: "Unknown", jobTitle: "", skills: ["JavaScript", "React"], surveyCompleted: false, avatar: null },
-  { id: uid(), name: "Maria Santos", program: "BS Information Technology", gradYear: "2022", employed: "Employed", jobTitle: "Data & Systems Coordinator", skills: ["SQL", "Project Management", "Python"], surveyCompleted: true, avatar: null },
-  { id: uid(), name: "Jerome Villanueva", program: "BS Computer Science", gradYear: "2023", employed: "Employed", jobTitle: "Frontend Developer", skills: ["React", "Node.js", "UI/UX"], surveyCompleted: true, avatar: null },
-  { id: uid(), name: "Angel Reyes", program: "BS Information Technology", gradYear: "2021", employed: "Employed", jobTitle: "Network Security Specialist", skills: ["Networking", "Cybersecurity"], surveyCompleted: true, avatar: null },
-  { id: uid(), name: "Paolo Cruz", program: "BS Computer Science", gradYear: String(CURRENT_YEAR), employed: "Unemployed", jobTitle: "", skills: ["Java", "Data Analysis"], surveyCompleted: true, avatar: null },
+  { id: "self", name: "You", isSelf: true, program: "BS Computer Science", gradYear: String(CURRENT_YEAR), employed: "Unknown", jobTitle: "", companyName: "", businessName: "", years: "", skills: ["JavaScript", "React"], surveyCompleted: false, avatar: null },
+  { id: uid(), name: "Maria Santos", program: "BS Information Technology", gradYear: "2022", employed: "Employed", jobTitle: "Data & Systems Coordinator", companyName: "CDO Analytics Hub", businessName: "", years: "3", skills: ["SQL", "Project Management", "Python"], surveyCompleted: true, avatar: null },
+  { id: uid(), name: "Jerome Villanueva", program: "BS Computer Science", gradYear: "2023", employed: "Employed", jobTitle: "Frontend Developer", companyName: "Iligan Digital Solutions", businessName: "", years: "1", skills: ["React", "Node.js", "UI/UX"], surveyCompleted: true, avatar: null },
+  { id: uid(), name: "Angel Reyes", program: "BS Information Technology", gradYear: "2021", employed: "Self Employed", jobTitle: "", companyName: "", businessName: "Reyes Network Consulting", years: "4", skills: ["Networking", "Cybersecurity"], surveyCompleted: true, avatar: null },
+  { id: uid(), name: "Paolo Cruz", program: "BS Computer Science", gradYear: String(CURRENT_YEAR), employed: "Unemployed", jobTitle: "", companyName: "", businessName: "", years: "", skills: ["Java", "Data Analysis"], surveyCompleted: true, avatar: null },
 ];
 
 const INITIAL_JOBS = [
@@ -1787,15 +1857,22 @@ const INITIAL_NOTIFICATIONS = [
 ];
 
 export default function App() {
+  const [booting, setBooting] = useState(true);
   const [page, setPage] = useState("login");
   const [role, setRole] = useState("alumni");
   const [name, setName] = useState("");
+  const [justSignedUp, setJustSignedUp] = useState(false);
 
   const [alumni, setAlumni] = useState(INITIAL_ALUMNI);
   const [jobs, setJobs] = useState(INITIAL_JOBS);
   const [events, setEvents] = useState(INITIAL_EVENTS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [toasts, setToasts] = useState([]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setBooting(false), 1100);
+    return () => clearTimeout(t);
+  }, []);
 
   function addToast(text) {
     const id = uid();
@@ -1808,8 +1885,17 @@ export default function App() {
       setAlumni((list) => list.map((a) => (a.isSelf ? { ...a, ...patch } : a)));
       addToast("Profile updated.");
     },
-    submitSurvey({ employed, jobTitle, skills }) {
-      setAlumni((list) => list.map((a) => (a.isSelf ? { ...a, employed, jobTitle: jobTitle || "", skills, surveyCompleted: true } : a)));
+    submitSurvey({ employed, jobTitle, companyName, businessName, years, skills }) {
+      setAlumni((list) => list.map((a) => (a.isSelf ? {
+        ...a,
+        employed,
+        jobTitle: jobTitle || "",
+        companyName: companyName || "",
+        businessName: businessName || "",
+        years: years || "",
+        skills,
+        surveyCompleted: true,
+      } : a)));
       addToast("Survey submitted — thanks for the update!");
     },
     addSkill(skill) {
@@ -1819,7 +1905,7 @@ export default function App() {
       setAlumni((list) => list.map((a) => (a.isSelf ? { ...a, skills: a.skills.filter((s) => s !== skill) } : a)));
     },
     addAlumni({ name: n, program, gradYear }) {
-      setAlumni((list) => [...list, { id: uid(), name: n, program, gradYear, employed: "Unknown", jobTitle: "", skills: [], surveyCompleted: false, avatar: null }]);
+      setAlumni((list) => [...list, { id: uid(), name: n, program, gradYear, employed: "Unknown", jobTitle: "", companyName: "", businessName: "", years: "", skills: [], surveyCompleted: false, avatar: null }]);
       addToast("Alumnus added to the directory.");
     },
     removeAlumni(id) {
@@ -1861,6 +1947,7 @@ export default function App() {
 
   function handleLogin(e) {
     e.preventDefault();
+    setJustSignedUp(false);
     setPage("dashboard");
   }
 
@@ -1873,16 +1960,36 @@ export default function App() {
       program: role === "alumni" ? data.program : a.program,
       gradYear: role === "alumni" ? data.gradYear : a.gradYear,
     } : a)));
+    setJustSignedUp(true);
     setPage("dashboard");
   }
 
   function handleLogout() {
+    setJustSignedUp(false);
     setPage("login");
+  }
+
+  if (booting) {
+    return (
+      <div className="tracer-root">
+        <style>{STYLES}</style>
+        <SplashScreen />
+      </div>
+    );
   }
 
   let body;
   if (page === "dashboard") {
-    body = <Dashboard role={role} name={name} domain={domain} onLogout={handleLogout} />;
+    body = (
+      <Dashboard
+        role={role}
+        name={name}
+        domain={domain}
+        onLogout={handleLogout}
+        firstTime={justSignedUp}
+        onFirstTimeHandled={() => setJustSignedUp(false)}
+      />
+    );
   } else if (page === "signup") {
     body = <SignupPage role={role} setRole={setRole} onSubmit={handleSignup} goLogin={() => setPage("login")} />;
   } else {
