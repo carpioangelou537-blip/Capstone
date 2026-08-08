@@ -212,6 +212,17 @@ html, body, #root, .tracer-root {
   outline: 2px solid var(--gold); outline-offset: 2px;
 }
 
+/* The lock banner below is styled for a light background by default
+   (dark maroon text on a soft pink tint). Inside the dark maroon
+   detail panel that combination is nearly unreadable, so flip it to a
+   light-on-dark variant there — this is where AlumniDashboardOverview
+   renders it. */
+.detail-panel .lock-banner {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.28);
+  color: var(--white);
+}
+
 .btn-danger {
   border: none; background: transparent; color: #a33; cursor: pointer; padding: 6px 8px; border-radius: 7px;
   transition: background 0.2s var(--ease), transform 0.2s var(--ease);
@@ -238,7 +249,7 @@ html, body, #root, .tracer-root {
   animation: crestPulse 3.4s ease-in-out infinite;
 }
 .crest.small { width: 40px; height: 40px; font-size: 0.75rem; animation: none; }
-.crest.xl { width: 112px; height: 112px; font-size: 1.7rem; box-shadow: 0 0 0 6px rgba(255,255,255,0.18); }
+.crest.xl { width: 96px; height: 96px; font-size: 1.4rem; box-shadow: 0 0 0 5px rgba(255,255,255,0.18); }
 
 @keyframes crestPulse {
   0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.18); }
@@ -249,6 +260,11 @@ html, body, #root, .tracer-root {
 }
 
 .crest-logo { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.logo-duo { display: flex; align-items: center; justify-content: center; gap: clamp(10px, 3vw, 18px); flex-wrap: wrap; }
+@media (max-width: 480px) {
+  .logo-duo { flex-direction: row; gap: 10px; }
+}
 
 /* ---------------------------------------------------------------- */
 /*  Toasts                                                             */
@@ -374,10 +390,10 @@ html, body, #root, .tracer-root {
 
 .dash-main { padding: clamp(18px, 4vw, 32px) clamp(16px, 5vw, 40px) 60px clamp(10px, 2vw, 20px); max-width: 1180px; }
 
-.dash-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s var(--ease) both; position: relative; }
+.dash-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s var(--ease) both; position: relative; z-index: 30; }
 .dash-header h1 { font-family: var(--font-display); font-size: clamp(1.15rem, 3.4vw, 1.75rem); color: var(--black); margin-top: 4px; }
 .dash-header .eyebrow { color: var(--maroon); }
-.dash-header-actions { display: flex; align-items: center; gap: 12px; }
+.dash-header-actions { display: flex; align-items: center; gap: 12px; position: relative; z-index: 30; }
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -387,7 +403,7 @@ html, body, #root, .tracer-root {
   color: rgba(255, 255, 255, 0.75);
 }
 
-.notif-wrap { position: relative; }
+.notif-wrap { position: relative; z-index: 30; }
 
 .dash-profile-action {
   display: flex; align-items: center; gap: 8px; border: 1px solid rgba(92, 15, 26, 0.12); background: var(--white);
@@ -416,7 +432,7 @@ html, body, #root, .tracer-root {
   color: var(--white);
   border-radius: 12px;
   box-shadow: 0 24px 50px -18px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08);
-  z-index: 120;
+  z-index: 400;
   padding: 8px;
   animation: dropIn 0.22s var(--ease) both;
 }
@@ -611,6 +627,19 @@ html, body, #root, .tracer-root {
   background: rgba(120,200,140,0.14); padding: 6px 12px; border-radius: 999px; animation: popIn 0.3s var(--ease) both;
 }
 
+/* Dashboard overview panel */
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 16px; }
+.overview-link {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
+  border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: var(--white);
+  padding: 12px 14px; border-radius: 10px; cursor: pointer; transition: all 0.2s var(--ease);
+}
+.overview-link:hover { background: rgba(255,255,255,0.12); border-color: rgba(201,162,75,0.5); transform: translateY(-2px); }
+.overview-link-title { font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.overview-link-sub { font-size: 0.74rem; color: rgba(255,255,255,0.55); }
+.overview-block-title { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.55); margin: 22px 0 10px; }
+.overview-block-title:first-child { margin-top: 0; }
+
 /* ---------------------------------------------------------------- */
 /*  Responsive                                                        */
 /* ---------------------------------------------------------------- */
@@ -636,6 +665,7 @@ html, body, #root, .tracer-root {
   .auth-card { padding: 26px 20px 22px; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .feature-grid { grid-template-columns: 1fr 1fr; }
+  .crest.xl { width: 80px; height: 80px; font-size: 1.2rem; box-shadow: 0 0 0 4px rgba(255,255,255,0.18); }
   .dash-header { flex-direction: column; align-items: flex-start; }
   .dash-header-actions { width: 100%; justify-content: space-between; }
   .notif-dropdown { position: fixed; top: 64px; left: 10px; right: 10px; width: auto; }
@@ -656,7 +686,7 @@ html, body, #root, .tracer-root {
   .bar-label { width: 76px; font-size: 0.68rem; }
   .lock-banner { font-size: 0.8rem; align-items: flex-start; }
   .table-wrap { margin: 0 -2px; }
-  .crest.xl { width: 84px; height: 84px; font-size: 1.3rem; }
+  .crest.xl { width: 68px; height: 68px; font-size: 1rem; box-shadow: 0 0 0 4px rgba(255,255,255,0.18); }
   .modal-card { padding: 20px 18px; }
 }
 
@@ -698,6 +728,7 @@ const ICONS = {
   x: "M5 5l10 10M15 5 5 15",
   camera: "M6 4l1-1.5h6L14 4h3v11H3V4h3Zm4 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z",
   briefcase: "M7 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h4v3H3V4h4Zm-1 0h8V3H6v1ZM3 8h16v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Z",
+  grid: "M2 2h7v7H2V2Zm9 0h7v7h-7V2ZM2 11h7v7H2v-7Zm9 0h7v7h-7v-7Z",
 };
 
 function Icon({ name, size = 20 }) {
@@ -708,8 +739,8 @@ function Icon({ name, size = 20 }) {
   );
 }
 
-function BrandLogo() {
-  return <img src="/logo.png" alt="SPC logo" className="crest-logo" onError={(e) => { e.target.style.display = "none"; }} />;
+function BrandLogo({ src = "/logo.png", alt = "SPC logo" }) {
+  return <img src={src} alt={alt} className="crest-logo" onError={(e) => { e.target.style.display = "none"; }} />;
 }
 
 function TracerLine({ className = "" }) {
@@ -732,6 +763,7 @@ function TracerLine({ className = "" }) {
 /* ------------------------------------------------------------------ */
 
 const ADMIN_FEATURES = [
+  { icon: "grid", title: "Dashboard", text: "A quick overview of the alumni network — jump straight to any module from here." },
   { icon: "key", title: "Login & Authentication", text: "Sign in through a protected login module that checks every credential against the account database before granting access." },
   { icon: "users", title: "Manage User Accounts", text: "Create, update, view, and remove staff and alumni accounts, keeping access and security controls enforced system-wide." },
   { icon: "id", title: "View Alumni Information", text: "Browse alumni records — student details, employment history, and self-reported skills — in one monitored view." },
@@ -744,6 +776,7 @@ const ADMIN_FEATURES = [
 
 function getAlumniFeatures() {
   return [
+    { icon: "grid", title: "Dashboard", text: "A quick overview of your profile, matches, and updates — jump straight to any module from here." },
     { icon: "id", title: "Manage Alumni Profile", text: "Upload a profile photo and edit the personal details on your profile whenever your information changes." },
     { icon: "doc", title: "Complete the Alumni Survey", text: "Share your employment status and current skill set so it can be matched against the job bank and your field of study." },
     { icon: "chart", title: "Job Alignment", text: "See how closely your current skills line up with what employers are hiring for right now." },
@@ -756,8 +789,6 @@ function getAlumniFeatures() {
 const PROGRAM_OPTIONS = [
   "BS Computer Science",
   "BS Information Technology",
-  "BS Information Systems",
-  "BS Computer Engineering",
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -870,8 +901,13 @@ function SplashScreen() {
   return (
     <div className="splash-screen">
       <div className="splash-logo-wrap">
-        <div className="crest xl">
-          <BrandLogo />
+        <div className="logo-duo">
+          <div className="crest xl">
+            <BrandLogo />
+          </div>
+          <div className="crest xl">
+            <BrandLogo src="/logos.png" alt="Alumni Affairs Office logo" />
+          </div>
         </div>
         <p className="splash-loading-text">Loading…</p>
       </div>
@@ -887,8 +923,13 @@ function AuthShell({ children }) {
   return (
     <div className="auth-page">
       <div className="auth-logo-wrap">
-        <div className="crest xl">
-          <BrandLogo />
+        <div className="logo-duo">
+          <div className="crest xl">
+            <BrandLogo />
+          </div>
+          <div className="crest xl">
+            <BrandLogo src="/logos.png" alt="Alumni Affairs Office logo" />
+          </div>
         </div>
       </div>
       <div className="auth-card-wrap">{children}</div>
@@ -1233,12 +1274,13 @@ function JobsAdminPanel({ jobs, onAdd, onRemove }) {
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [skills, setSkills] = useState("");
+  const [link, setLink] = useState("");
 
   function submit(e) {
     e.preventDefault();
     if (!title.trim() || !company.trim()) return;
-    onAdd({ title: title.trim(), company: company.trim(), skills: skills.split(",").map((s) => s.trim()).filter(Boolean) });
-    setTitle(""); setCompany(""); setSkills("");
+    onAdd({ title: title.trim(), company: company.trim(), skills: skills.split(",").map((s) => s.trim()).filter(Boolean), link: link.trim() });
+    setTitle(""); setCompany(""); setSkills(""); setLink("");
   }
 
   return (
@@ -1249,6 +1291,7 @@ function JobsAdminPanel({ jobs, onAdd, onRemove }) {
           <label>Company<input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Iligan Digital Solutions" /></label>
         </div>
         <label>Skills needed (comma separated)<input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="React, JavaScript" /></label>
+        <label>Posting link (Facebook, LinkedIn, or company page)<input value={link} onChange={(e) => setLink(e.target.value)} type="url" placeholder="https://facebook.com/... or https://linkedin.com/..." /></label>
         <button type="submit" className="btn-ghost" style={{ alignSelf: "flex-start" }}><Icon name="plus" size={14} /> Publish posting</button>
       </form>
 
@@ -1259,6 +1302,11 @@ function JobsAdminPanel({ jobs, onAdd, onRemove }) {
               <div className="list-item-title">{j.title}</div>
               <div className="list-item-sub">{j.company}</div>
               <div className="chip-row" style={{ marginTop: 6 }}>{j.skills.map((s) => <span className="chip" key={s}>{s}</span>)}</div>
+              {j.link && (
+                <a href={j.link} target="_blank" rel="noopener noreferrer" className="notif-goto" style={{ marginTop: 8, display: "inline-flex" }}>
+                  <Icon name="arrow" size={12} /> View posting
+                </a>
+              )}
             </div>
             <div className="list-item-actions">
               <button className="btn-danger" onClick={() => onRemove(j.id)}><Icon name="trash" size={15} /></button>
@@ -1491,6 +1539,11 @@ function JobAlignmentPanel({ me, jobs }) {
               <div className="chip-row" style={{ marginTop: 6 }}>
                 {j.skills.map((s) => <span className={`chip ${j.overlap.includes(s) ? "match" : ""}`} key={s}>{s}</span>)}
               </div>
+              {j.link && (
+                <a href={j.link} target="_blank" rel="noopener noreferrer" className="notif-goto" style={{ marginTop: 8, display: "inline-flex" }}>
+                  <Icon name="arrow" size={12} /> Visit posting
+                </a>
+              )}
             </div>
             <span className="pill ok">{j.overlap.length} skill match{j.overlap.length === 1 ? "" : "es"}</span>
           </div>
@@ -1520,6 +1573,11 @@ function CareerToolsPanel({ me, jobs }) {
                   <span className={`chip ${j.overlap.includes(s) ? "match" : ""}`} key={s}>{s}</span>
                 ))}
               </div>
+              {j.link && (
+                <a href={j.link} target="_blank" rel="noopener noreferrer" className="notif-goto" style={{ marginTop: 8, display: "inline-flex" }}>
+                  <Icon name="arrow" size={12} /> Visit posting
+                </a>
+              )}
             </div>
             {j.overlap.length > 0 && <span className="pill ok">{j.overlap.length} skill match{j.overlap.length === 1 ? "" : "es"}</span>}
           </div>
@@ -1554,6 +1612,95 @@ function EventsAlumniPanel({ events, me, onRsvp }) {
 
 function StaticInfoPanel({ text }) {
   return <div className="panel-block"><p style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.88rem", lineHeight: 1.6 }}>{text}</p></div>;
+}
+
+/* Dashboard overview — the landing feature for both roles. Surfaces the
+   most useful next actions and recent activity, and lets people jump
+   straight into any other module. */
+function AdminDashboardOverview({ alumni, jobs, events, notifications, onNavigate }) {
+  const pendingSurveys = alumni.filter((a) => !a.surveyCompleted).length;
+  const links = [
+    { title: "Manage User Accounts", icon: "users", sub: `${alumni.length} account${alumni.length === 1 ? "" : "s"}` },
+    { title: "View Survey Results", icon: "chart", sub: pendingSurveys ? `${pendingSurveys} pending` : "All caught up" },
+    { title: "Manage Notifications", icon: "bell", sub: `${notifications.length} sent` },
+    { title: "Career Tools & Job Postings", icon: "brief", sub: `${jobs.length} open posting${jobs.length === 1 ? "" : "s"}` },
+    { title: "Manage Event Posting", icon: "calendar", sub: `${events.length} upcoming` },
+    { title: "View AI Analytics", icon: "spark", sub: "Skill demand insights" },
+  ];
+  return (
+    <div className="panel-block">
+      <div className="overview-block-title">Jump to a module</div>
+      <div className="overview-grid">
+        {links.map((l) => (
+          <button key={l.title} type="button" className="overview-link" onClick={() => onNavigate(l.title)}>
+            <span className="overview-link-title"><Icon name={l.icon} size={15} /> {l.title}</span>
+            <span className="overview-link-sub">{l.sub}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="overview-block-title">Latest notifications</div>
+      <div className="list-block">
+        {notifications.length === 0 && <div className="empty-state">Nothing sent to alumni yet.</div>}
+        {notifications.slice(0, 3).map((n) => (
+          <div className="list-item" key={n.id}>
+            <div className="list-item-main">
+              <div className="list-item-title" style={{ fontWeight: 500 }}>{n.text}</div>
+              <div className="list-item-sub">{n.date}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AlumniDashboardOverview({ me, jobs, events, notifications, onNavigate }) {
+  const matchedJobs = jobs.filter((j) => j.skills.some((s) => me.skills.some((ms) => ms.toLowerCase() === s.toLowerCase()))).length;
+  const links = [
+    { title: "Manage Alumni Profile", icon: "id", sub: me.avatar ? "Photo added" : "Add a photo" },
+    { title: "Complete the Alumni Survey", icon: "doc", sub: me.surveyCompleted ? "Done — update anytime" : "Pending" },
+    { title: "Job Alignment", icon: "chart", sub: `${matchedJobs} matched posting${matchedJobs === 1 ? "" : "s"}` },
+    { title: "Career Tools", icon: "brief", sub: `${jobs.length} open posting${jobs.length === 1 ? "" : "s"}` },
+    { title: "Events & Activities", icon: "calendar", sub: `${events.length} upcoming` },
+  ];
+  return (
+    <div className="panel-block">
+      {!me.surveyCompleted && (
+        <div className="lock-banner">
+          <Icon name="doc" size={18} />
+          <span>You haven't completed your alumni survey yet — finish it to unlock job matches and analytics.</span>
+        </div>
+      )}
+      <div className="overview-block-title">Jump to a module</div>
+      <div className="overview-grid">
+        {links.map((l) => (
+          <button key={l.title} type="button" className="overview-link" onClick={() => onNavigate(l.title)}>
+            <span className="overview-link-title"><Icon name={l.icon} size={15} /> {l.title}</span>
+            <span className="overview-link-sub">{l.sub}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="overview-block-title">Latest from the Alumni Affairs Office</div>
+      <div className="list-block">
+        {notifications.length === 0 && <div className="empty-state">No announcements yet.</div>}
+        {notifications.slice(0, 3).map((n) => (
+          <div className="list-item" key={n.id}>
+            <div className="list-item-main">
+              <div className="list-item-title" style={{ fontWeight: 500 }}>{n.text}</div>
+              <div className="list-item-sub">{n.date}</div>
+            </div>
+            {n.target && (
+              <button type="button" className="notif-goto" onClick={() => onNavigate(n.target)}>
+                Go to {n.target} <Icon name="arrow" size={12} />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -1693,6 +1840,8 @@ function Dashboard({ role, name, domain, onLogout, firstTime, onFirstTimeHandled
   function renderPanel(title) {
     if (role === "admin") {
       switch (title) {
+        case "Dashboard":
+          return <AdminDashboardOverview alumni={alumni} jobs={jobs} events={events} notifications={notifications} onNavigate={goToFeature} />;
         case "Login & Authentication":
           return <StaticInfoPanel text="Every sign-in is checked against the account database before an admin session is granted. This demo skips real authentication so you can explore freely." />;
         case "Manage User Accounts":
@@ -1714,6 +1863,8 @@ function Dashboard({ role, name, domain, onLogout, firstTime, onFirstTimeHandled
       }
     }
     switch (title) {
+      case "Dashboard":
+        return <AlumniDashboardOverview me={me} jobs={jobs} events={events} notifications={notifications} onNavigate={goToFeature} />;
       case "Manage Alumni Profile":
         return <ProfilePanel me={me} onSave={actions.updateSelf} />;
       case "Complete the Alumni Survey":
@@ -1842,9 +1993,9 @@ const INITIAL_ALUMNI = [
 ];
 
 const INITIAL_JOBS = [
-  { id: uid(), title: "Junior Web Developer", company: "Iligan Digital Solutions", skills: ["JavaScript", "React"] },
-  { id: uid(), title: "IT Support Specialist", company: "Northern Mindanao Hospital", skills: ["Networking", "Cybersecurity"] },
-  { id: uid(), title: "Data Analyst", company: "CDO Analytics Hub", skills: ["Python", "Data Analysis", "SQL"] },
+  { id: uid(), title: "Junior Web Developer", company: "Iligan Digital Solutions", skills: ["JavaScript", "React"], link: "https://www.facebook.com/" },
+  { id: uid(), title: "IT Support Specialist", company: "Northern Mindanao Hospital", skills: ["Networking", "Cybersecurity"], link: "" },
+  { id: uid(), title: "Data Analyst", company: "CDO Analytics Hub", skills: ["Python", "Data Analysis", "SQL"], link: "https://www.linkedin.com/" },
 ];
 
 const INITIAL_EVENTS = [
@@ -1996,7 +2147,7 @@ export default function App() {
     body = <LoginPage role={role} setRole={setRole} onSubmit={handleLogin} goSignup={() => setPage("signup")} />;
   }
 
-  return (
+  return (  
     <div className="tracer-root">
       <style>{STYLES}</style>
       <ToastStack toasts={toasts} />
